@@ -40,16 +40,16 @@ std::unordered_map<std::string, std::array<int, 17>> bone_indexes;
 
 namespace offsets {
 
-uintptr_t entity_list = 0x23B5F78;
-uintptr_t local_player = 0x2562300;
-uintptr_t view_matrix = 0x2573E30;
+uintptr_t entity_list = 0x1F220C8;
+uintptr_t local_player = 0x1DCB588;
+uintptr_t view_matrix = 0x20DFA20;
 ptrdiff_t m_hpawn = 0x60c;
 ptrdiff_t m_pgamescenenode = 0x328;
 ptrdiff_t m_modelstate = 0x170;
 ptrdiff_t m_hmodel = 0x00D0;
 ptrdiff_t m_modelname = 0x00D8;
 ptrdiff_t m_voldorigin = 0x0EDC;
-ptrdiff_t m_iteamnum = 0x03EF;
+ptrdiff_t m_iteamnum = 0x03eb;
 
 
 ptrdiff_t m_playerdataglobal = 0x0750;
