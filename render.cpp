@@ -129,7 +129,6 @@ void render::loop(std::function<void()> const& func)
         ImGui_ImplWin32_NewFrame();
         ImGui::NewFrame();
         SetWindowLong(Data::MainWindow, GWL_EXSTYLE, WS_EX_TOPMOST | WS_EX_TRANSPARENT | WS_EX_LAYERED | WS_EX_TOOLWINDOW);
-        ImGui::GetForegroundDrawList()->AddLine({ 0,0 }, { 100,100 }, ImColor(255, 9, 0));
         std::string fps = std::to_string(ImGui::GetIO().Framerate);
         ImGui::GetForegroundDrawList()->AddText(ImVec2(0, 0), ImColor(255, 255, 255), fps.c_str());
         func();
