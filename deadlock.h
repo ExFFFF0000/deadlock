@@ -14,7 +14,7 @@ std::unique_ptr<frg::process> game;
 
 uintptr_t client = 0;
 uintptr_t entity_list = 0;
-
+uintptr_t camera_manager = 0;
 
 std::vector<std::string> bone_names = {
 	"pelvis",
@@ -43,6 +43,7 @@ namespace offsets {
 uintptr_t entity_list = 0x1F220C8;
 uintptr_t local_player = 0x1DCB588;
 uintptr_t view_matrix = 0x20DFA20;
+uintptr_t camera_manager = 0x1F439C0;
 ptrdiff_t m_hpawn = 0x60c;
 ptrdiff_t m_pgamescenenode = 0x328;
 ptrdiff_t m_modelstate = 0x170;
@@ -50,10 +51,7 @@ ptrdiff_t m_hmodel = 0x00D0;
 ptrdiff_t m_modelname = 0x00D8;
 ptrdiff_t m_voldorigin = 0x0EDC;
 ptrdiff_t m_iteamnum = 0x03eb;
-
-
 ptrdiff_t m_playerdataglobal = 0x0750;
-
 ptrdiff_t m_imaxhealth =  0x0010; // int32
 ptrdiff_t m_ihealth = 0x0048;
 // int32
@@ -83,6 +81,7 @@ bool init() {
 
 void update() {
 	entity_list = game->read<uintptr_t>((void*)(client + offsets::entity_list));
+	camera_manager = game->read<uintptr_t>((void*)(client + offsets::camera_manager + 0x28));
 }
 
 void* get_entity_by_idx(const int32_t idx)
@@ -160,9 +159,6 @@ view_matrix_t get_view_matrix() {
 vec3 get_player_position(uintptr_t entity) {
 	return game->read<vec3>((void*)(entity + offsets::m_voldorigin));
 }
-
-
-
 
 std::string get_model_name(uintptr_t node) {
 	uintptr_t hmodel = game->read<uintptr_t>((void*)(node + offsets::m_modelstate + offsets::m_modelname));
@@ -246,6 +242,12 @@ int get_max_health(uintptr_t entity) {
 	return game->read<int>((void*)(entity + 0x0348));
 }
 
+void set_view_angle(float pitch, float yaw) {
+	vec2 angles{ pitch, yaw };
+	game->write((void*)(camera_manager + 0x44), &angles, sizeof(angles));
+};
+
+
 vec4 get_box_rect(vec3 top, vec3 bottom) {
 	vec4 ret{};
 	ret.h = (int)(bottom.y - top.y);
@@ -256,8 +258,21 @@ vec4 get_box_rect(vec3 top, vec3 bottom) {
 }
 
 void draw_health_bar(uintptr_t entity,vec2 pos,int width) {
+	int health = get_health(entity);
+	int max_health = get_max_health(entity);
+
+	if (max_health <= 0) return ;
+
+	int HealthMaxWidth = width * 0.9f;
+	int HealthWidth = HealthMaxWidth * health / max_health;
+	ImGui::GetForegroundDrawList()->AddRectFilledMultiColor(
+		ImVec2(pos.x - HealthMaxWidth / 2, pos.y - 7),
+		ImVec2(pos.x - HealthMaxWidth / 2 + HealthWidth, pos.y - 3),
+		IM_COL32(255, 0, 0, 255), IM_COL32(0, 255, 0, 255),
+		IM_COL32(0, 255, 0, 255), IM_COL32(255, 0, 0, 255));
+
+	ImGui::GetForegroundDrawList()->AddRect(ImVec2(pos.x - HealthMaxWidth / 2, pos.y - 7), ImVec2(pos.x - HealthMaxWidth / 2 + HealthMaxWidth, pos.y - 7 + 5), ImGui::ColorConvertFloat4ToU32(ImVec4(0.3f, 0.3f, 0.3f, 0.8f)), 0, 15, 1.f);
 
 }
-
 
 }// namespace deadlock

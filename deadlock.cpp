@@ -23,18 +23,18 @@ int main()
             if (team == local_team)
                 continue;
 
-            //auto root_position = deadlock::get_player_position((uintptr_t)pawn);
-            //auto head_position = deadlock::get_player_head_position((uintptr_t)pawn);
+            auto root_position = deadlock::get_player_position((uintptr_t)pawn);
+           auto head_position = deadlock::get_player_head_position((uintptr_t)pawn);
 
-            //vec3 head_screen_position,root_screen_position;
-            //if(!math::world_to_screen({ 1920, 1080 }, root_position, root_screen_position, view_matrix))
-            //    continue;
-            //if(!math::world_to_screen({ 1920, 1080 }, head_screen_position, head_screen_position, view_matrix))
-            //    continue;
+            vec3 head_screen_position,root_screen_position;
+            if(!math::world_to_screen({ 1920, 1080 }, root_position, root_screen_position, view_matrix))
+                continue;
+            if(!math::world_to_screen({ 1920, 1080 }, head_position, head_screen_position, view_matrix))
+                continue;
 
-            //auto rect = deadlock::get_box_rect(head_position, root_position);
+            auto rect = deadlock::get_box_rect(head_screen_position, root_screen_position);
 
-            //deadlock::draw_health_bar((uintptr_t)pawn, { (float)rect.x,(float)rect.y }, 100);
+            deadlock::draw_health_bar((uintptr_t)pawn, { (float)root_screen_position.x,(float)root_screen_position.y + 0x10 }, rect.w);
             deadlock::draw_bone((uintptr_t)pawn, view_matrix);
         }
 
